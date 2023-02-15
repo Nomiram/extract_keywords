@@ -9,7 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from summa import keywords
 
 nltk.download("stopwords")
-with open("theses_grnti.json","r",encoding="utf8") as f:
+with open("theses.json","r",encoding="utf8") as f:
     all_texts = json.load(f)
 cnt = 0
 for i in list(all_texts):
