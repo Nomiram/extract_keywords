@@ -16,10 +16,14 @@ def stem(text):
     snowball_en = SnowballStemmer(language="english")
     text_strip = []
     for word in words:
-        if word[0].lower() in string.ascii_lowercase:
-            text_strip.append(snowball_en.stem(word))
+        # Чтобы не съедались аббревиатуры
+        if len(word) > 4:
+            if word[0].lower() in string.ascii_lowercase:
+                text_strip.append(snowball_en.stem(word))
+            else:
+                text_strip.append(snowball_ru.stem(word))
         else:
-            text_strip.append(snowball_ru.stem(word))
+            text_strip.append(word)
     text_strip = " ".join(text_strip)
     return text_strip
 
@@ -27,17 +31,18 @@ def extract_keywords(text):
     '''extract keywords by manual method using file `keywords.json` and `YAKE!`'''
     # Manual method
     text_stem = stem(text)
+    text_stem_list = text_stem.split()
     stem_keywords = {}
     with open("keywords.json","r",encoding="utf8") as f:
         keywords = json.load(f)
         for kw in keywords:
             stem_keywords[stem(kw)] = kw
     result = []
-    # print("+",stem_keywords)
     for kw in list(stem_keywords):
-        if text_stem.find(kw) != -1:
+        # Если ключевое слово есть в списке слов или списке словосочетаний
+        if kw in text_stem_list or \
+        kw in [text_stem_list[i] + " "+ text_stem_list[i+1] for i in range(len(text_stem_list)-1)]:
             result.append(stem_keywords[kw])
-    # print("!",result,"!")
     # YAKE
     extractor = yake.KeywordExtractor (
         lan = "ru",     # язык
