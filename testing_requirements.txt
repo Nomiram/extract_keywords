@@ -1,0 +1,10 @@
+nlp_rake==0.0.2
+nltk==3.8.1
+numpy==1.24.1
+pymorphy3==1.2.0
+pytextrank==3.2.4
+scikit_learn==1.2.1
+spacy==3.5.0
+summa==1.2.0
+textblob==0.17.1
+yake==0.4.8
