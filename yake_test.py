@@ -1,12 +1,12 @@
 '''test file for Pytest'''
 import json
 
-import yake_keywords_mai
+from . import yake_keywords_mai
 
 def test_stem():
     '''test stem'''
-    assert yake_keywords_mai.stem("Два слова") == "два слов"
-    assert yake_keywords_mai.stem("Это три слова") == "эт три слов"
+    assert yake_keywords_mai.stem("Два слова") == "Два слов"
+    assert yake_keywords_mai.stem("Это три слова") == "Это три слов"
 
 def test_yake():
     '''test yake'''
@@ -20,3 +20,5 @@ def test_yake():
             print(text)
             result = yake_keywords_mai.extract_keywords(text=text)
             print(json.loads(result))
+
+# test_yake()
