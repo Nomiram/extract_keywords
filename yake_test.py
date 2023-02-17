@@ -3,6 +3,7 @@ import json
 
 from . import yake_keywords_mai
 
+
 def test_stem():
     '''test stem'''
     assert yake_keywords_mai.stem("Два слова") == "Два слов"
@@ -19,6 +20,6 @@ def test_yake():
             print(subject)
             print(text)
             result = yake_keywords_mai.extract_keywords(text=text)
-            print(json.loads(result))
+            print(result)
 
 # test_yake()

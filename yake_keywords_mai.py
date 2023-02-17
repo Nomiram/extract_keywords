@@ -7,6 +7,8 @@ import nltk
 import yake
 from nltk.stem import SnowballStemmer
 
+nltk.download("stopwords", quiet=True)
+nltk.download('punkt', quiet=True)
 
 def stem(text):
     '''Tokenize and stemming text'''
@@ -24,10 +26,13 @@ def stem(text):
                 text_strip.append(snowball_ru.stem(word))
         else:
             text_strip.append(word)
+        # Удаление ошибок
+        if text_strip[-1] == "":
+            del text_strip[-1]
     text_strip = " ".join(text_strip)
     return text_strip
 
-def extract_keywords(text):
+def extract_keywords(text, num = 10):
     '''extract keywords by manual method using file `keywords.json` and `YAKE!`'''
     # Manual method
     text_stem = stem(text)
@@ -42,18 +47,18 @@ def extract_keywords(text):
         # Если ключевое слово есть в списке слов или списке словосочетаний
         if kw in text_stem_list or \
         kw in [text_stem_list[i] + " "+ text_stem_list[i+1] for i in range(len(text_stem_list)-1)]:
-            result.append(stem_keywords[kw])
+            result.append(stem_keywords[kw].lower())
     # YAKE
     extractor = yake.KeywordExtractor (
         lan = "ru",     # язык
         n = 3,          # максимальное количество слов в фразе
         dedupLim = 0.3, # порог похожести слов
-        top = 10        # количество ключевых слов
+        top = num       # количество ключевых слов
     )
     yake_result = ([i[0] for i in extractor.extract_keywords(text)])
-    return json.dumps({"manual": result, "yake": yake_result})
+    return {"manual": result, "yake": yake_result}
 
 if __name__ == "__main__":
     nltk.download("stopwords", quiet=True)
     input_text = sys.stdin.readlines()
-    print(extract_keywords("\n".join(input_text)))
+    print(json.dumps(extract_keywords("\n".join(input_text))))
