@@ -2,6 +2,7 @@
 import json
 
 from . import yake_keywords_mai
+from . import text_rank_keywords_mai
 
 
 def test_stem():
@@ -22,4 +23,15 @@ def test_yake():
             result = yake_keywords_mai.extract_keywords(text=text)
             print(result)
 
-# test_yake()
+def test_text_rank():
+    '''test yake'''
+    with open("theses.json","r",encoding="utf8") as f:
+        all_texts = json.load(f)
+        for i in list(all_texts)[:10]:
+            subject = all_texts[i]["subject"]
+            text = all_texts[i]["text"]
+            print(f"Text {i}:")
+            print(subject)
+            print(text)
+            result = text_rank_keywords_mai.extract_keywords(text=text)
+            print(result)
