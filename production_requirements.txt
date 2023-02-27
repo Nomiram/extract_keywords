@@ -1,5 +1,6 @@
 nltk==3.8.1
 numpy==1.24.1
 yake==0.4.8
+pymorphy3==1.2.0
 pytextrank==3.2.4
 spacy==3.5.0
