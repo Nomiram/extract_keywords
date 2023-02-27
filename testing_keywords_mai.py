@@ -13,7 +13,7 @@ from yake_keywords_mai import extract_keywords
 
 
 # Количество текстов для теста
-COUNT_OF_TEXTS = 20
+COUNT_OF_TEXTS = 200
 
 nltk.download("stopwords")
 nltk.download('brown')
@@ -49,10 +49,10 @@ for i, raw_data in enumerate(all_texts):
     if i >= COUNT_OF_TEXTS:
         break
     print(f"{i}/{len(all_texts)}")
-    ready_keywords = raw_data["keywords"].split(", ")
-    text = raw_data["thesis"]
     if raw_data["keywords"] is None:
         continue
+    ready_keywords = raw_data["keywords"].split(", ")
+    text = raw_data["thesis"]
     stats["manual"]["keywords"].append(extract_keywords(text)["manual"])
     # print("\n\nRAKE")
     stops = list(set(stopwords.words("russian")))
