@@ -5,6 +5,7 @@ import sys
 import nltk
 import pytextrank
 import spacy
+import pymorphy3
 
 from manual_m import manual_m
 
@@ -24,7 +25,20 @@ def TextRank_m(text):
     doc = nlp(text)
 
     # examine the top-ranked phrases in the document
-    return [phrase.text for phrase in doc._.phrases]
+    raw_text_rank_keywords2 = [phrase.text for phrase in doc._.phrases]
+
+    morph = pymorphy3.MorphAnalyzer()
+    text_rank_keywords2 = []
+    for phrase in raw_text_rank_keywords2:
+        words = phrase.split()
+        ready_words = []
+        for word in words:
+            parsed_word = morph.parse(word)[0]
+            ready_words.append(parsed_word.normal_form)
+
+        text_rank_keywords2.append(\
+            pymorphy3.shapes.restore_capitalization(" ".join(ready_words),phrase))
+    return list(set(text_rank_keywords2))
 
 def extract_keywords(text):
     '''extract keywords by `TextRank`'''
