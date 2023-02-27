@@ -1,14 +1,13 @@
 '''test file for Pytest'''
 import json
 
-from . import yake_keywords_mai
-from . import text_rank_keywords_mai
+from . import text_rank_simple, yake_keywords_mai, manual_m
 
 
 def test_stem():
     '''test stem'''
-    assert yake_keywords_mai.stem("Два слова") == "Два слов"
-    assert yake_keywords_mai.stem("Это три слова") == "Это три слов"
+    assert manual_m.stem("Два слова") == "Два слов"
+    assert manual_m.stem("Это три слова") == "Это три слов"
 
 def test_yake():
     '''test yake'''
@@ -33,5 +32,5 @@ def test_text_rank():
             print(f"Text {i}:")
             print(subject)
             print(text)
-            result = text_rank_keywords_mai.extract_keywords(text=text)
+            result = text_rank_simple.extract_keywords(text=text)
             print(result)

@@ -1,20 +1,11 @@
-'''extract keywords from AiK thesis'''
+'''manual extract keywords from AiK thesis'''
+
 import json
 import string
-import sys
-import nltk
-import pytextrank
-import spacy
+
 import nltk
 from nltk.stem import SnowballStemmer
 
-nltk.download("stopwords", quiet=True)
-nltk.download('punkt', quiet=True)
-
-nlp = spacy.load("ru_core_news_sm")
-
-# add PyTextRank to the spaCy pipeline
-nlp.add_pipe("textrank")
 
 def stem(text):
     '''Tokenize and stemming text'''
@@ -38,8 +29,9 @@ def stem(text):
     text_strip = " ".join(text_strip)
     return text_strip
 
-def extract_keywords(text, num = 10):
-    '''extract keywords by manual method using file `keywords.json` and `YAKE!`'''
+
+def manual_m(text):
+    '''extract keywords by manual method using file `keywords.json`'''
     # Manual method
     text_stem = stem(text)
     text_stem_list = text_stem.split()
@@ -54,14 +46,4 @@ def extract_keywords(text, num = 10):
         if kw in text_stem_list or \
         kw in [text_stem_list[i] + " "+ text_stem_list[i+1] for i in range(len(text_stem_list)-1)]:
             result.append(stem_keywords[kw].lower())
-    # TEXT RANK
-    doc = nlp(text)
-
-    # examine the top-ranked phrases in the document
-    text_rank_result = [phrase.text for phrase in doc._.phrases]
-    return {"manual": result, "TextRank": text_rank_result}
-
-if __name__ == "__main__":
-    nltk.download("stopwords", quiet=True)
-    input_text = sys.stdin.readlines()
-    print(json.dumps(extract_keywords("\n".join(input_text))))
+    return result
