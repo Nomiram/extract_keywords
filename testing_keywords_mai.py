@@ -2,15 +2,14 @@
 import json
 from typing import List, Tuple
 
+import nltk
 import spacy
 import yake
-import nltk
 from nlp_rake import Rake
 from nltk.corpus import stopwords
 from summa import keywords
 
 from yake_keywords_mai import extract_keywords
-
 
 # Количество текстов для теста
 COUNT_OF_TEXTS = 200
@@ -26,22 +25,22 @@ def stat(list1: List[str], list2: List[str]) -> Tuple[int, int]:
     sum_ = sum(el in copy_list1 for el in copy_list2)
     neg = len(list2) - sum_
     if neg:
-        return sum_, neg, sum_/len(list2)
+        return sum_, neg, sum_ / len(list2)
     # else:
     return sum_, neg, 0
 
 
 # with open("theses_full.json","r",encoding="utf8") as f:
-with open("ГЧ21_keywords_theses.json","r",encoding="utf8") as f:
+with open("ГЧ21_keywords_theses.json", "r", encoding="utf8") as f:
     all_texts = json.load(f)[2]["data"]
-stats = {"ready_keywords":{"description":"Пользовательские ключевые слова"},
-         "manual":{"description":"Прямой поиск"},
-         "rake":{"description":"RAKE"},
-         "yake":{"description":"YAKE"},
-         "text_rank_keywords2":{"description":"TextRank"},
+stats = {"ready_keywords": {"description": "Пользовательские ключевые слова"},
+         "manual": {"description": "Прямой поиск"},
+         "rake": {"description": "RAKE"},
+         "yake": {"description": "YAKE"},
+         "text_rank_keywords2": {"description": "TextRank"},
          }
 for _, method in stats.items():
-    method["keywords"]=[]
+    method["keywords"] = []
     method["sum"] = 0
     method["all"] = 0
 
@@ -57,14 +56,14 @@ for i, raw_data in enumerate(all_texts):
     # print("\n\nRAKE")
     stops = list(set(stopwords.words("russian")))
 
-    rake = Rake (stopwords = stops, max_words = 3)
+    rake = Rake(stopwords=stops, max_words=3)
     rake_keywords = [i[0] for i in rake.apply(text)[:10]]
     # print("\n\nYAKE!")
-    extractor = yake.KeywordExtractor (
-        lan = "ru",     # язык
-        n = 3,          # максимальное количество слов в фразе
-        dedupLim = 0.3, # порог похожести слов
-        top = 10        # количество ключевых слов
+    extractor = yake.KeywordExtractor(
+        lan="ru",     # язык
+        n=3,          # максимальное количество слов в фразе
+        dedupLim=0.3,  # порог похожести слов
+        top=10        # количество ключевых слов
     )
     yake_keywords = [i[0] for i in extractor.extract_keywords(text)]
 
@@ -74,7 +73,8 @@ for i, raw_data in enumerate(all_texts):
     for i in text.split():
         if i not in stops:
             text_clean += i + " "
-    text_rank_keywords = keywords.keywords(text_clean, language = "russian").split("\n")
+    text_rank_keywords = keywords.keywords(
+        text_clean, language="russian").split("\n")
     from textblob import TextBlob
     blob = TextBlob(text_clean)
     noun = blob.noun_phrases
@@ -90,8 +90,8 @@ for i, raw_data in enumerate(all_texts):
     print("RAKE    ", rake_keywords)
     print("YAKE    ", yake_keywords)
     print("TextRank", text_rank_keywords2)
-    stats["ready_keywords"]["all"]+=len(ready_keywords)
-    stats["ready_keywords"]["sum"]+=len(ready_keywords)
+    stats["ready_keywords"]["all"] += len(ready_keywords)
+    stats["ready_keywords"]["sum"] += len(ready_keywords)
     s, _, _ = stat(ready_keywords, stats["manual"]["keywords"][-1])
     stats["manual"]["sum"] += s
     stats["manual"]["all"] += len(stats["manual"]["keywords"][-1])
@@ -114,7 +114,7 @@ for i, raw_data in enumerate(all_texts):
 print()
 print("Всего текстов:", COUNT_OF_TEXTS)
 for key, method in stats.items():
-    print("\t"+method["description"])
+    print("\t" + method["description"])
     print(f"Всего предложено:   {method['all']}")
     print(f"Совпадений:         {method['sum']}")
     print(f"Процент совпадений: {method['sum']/method['all']*100}%")

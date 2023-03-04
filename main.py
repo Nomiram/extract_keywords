@@ -14,6 +14,7 @@ def extract_keywords(text):
     text_rank_result = TextRank_m(text)
     return {"manual": result, "TextRank": text_rank_result}
 
+
 if __name__ == "__main__":
     input_text = sys.stdin.readlines()
     print(json.dumps(extract_keywords("\n".join(input_text))))

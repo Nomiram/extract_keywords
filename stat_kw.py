@@ -10,15 +10,15 @@ for kw in raw_keywords:
     if kw:
         for i in kw.split(", "):
             if i.lower() in keywords:
-                keywords[i.lower()]+=1
+                keywords[i.lower()] += 1
             else:
-                keywords[i.lower()]=1
+                keywords[i.lower()] = 1
 
 sum_one = 0
 all = len(keywords)
 for key, value in keywords.items():
     if value == 1:
-        sum_one+=1
+        sum_one += 1
 print(f"Всего ключевых слов: {all}")
 print(f"Встречаются 1 раз:   {sum_one}")
 print(f"Частота:             {sum_one/all*100}%")

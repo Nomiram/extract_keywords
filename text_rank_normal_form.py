@@ -3,18 +3,17 @@ import json
 import sys
 
 import nltk
+import pymorphy3
 import pytextrank
 import spacy
-import pymorphy3
 
 from manual_m import manual_m
 
-nltk.download("stopwords", quiet=True)
-nltk.download('punkt', quiet=True)
+# nltk.download("stopwords", quiet=True)
+# nltk.download('punkt', quiet=True)
+
 
 def TextRank_m(text):
-    nltk.download("stopwords", quiet=True)
-    nltk.download('punkt', quiet=True)
 
     nlp = spacy.load("ru_core_news_sm")
 
@@ -36,9 +35,10 @@ def TextRank_m(text):
             parsed_word = morph.parse(word)[0]
             ready_words.append(parsed_word.normal_form)
 
-        text_rank_keywords2.append(\
-            pymorphy3.shapes.restore_capitalization(" ".join(ready_words),phrase))
+        text_rank_keywords2.append(
+            pymorphy3.shapes.restore_capitalization(" ".join(ready_words), phrase))
     return list(set(text_rank_keywords2))
+
 
 def extract_keywords(text):
     '''extract keywords by `TextRank`'''
@@ -46,8 +46,9 @@ def extract_keywords(text):
     text_rank_result = TextRank_m(text)
     return {"manual": result, "TextRank": text_rank_result}
 
+
 if __name__ == "__main__":
-    nltk.download("stopwords", quiet=True)
+    # nltk.download("stopwords", quiet=True)
     if not pytextrank.version:
         exit()
     input_text = sys.stdin.readlines()

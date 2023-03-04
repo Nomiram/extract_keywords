@@ -11,6 +11,7 @@ from manual_m import manual_m
 nltk.download("stopwords", quiet=True)
 nltk.download('punkt', quiet=True)
 
+
 def TextRank_m(text):
     nltk.download("stopwords", quiet=True)
     nltk.download('punkt', quiet=True)
@@ -26,11 +27,13 @@ def TextRank_m(text):
     # examine the top-ranked phrases in the document
     return [phrase.text for phrase in doc._.phrases]
 
+
 def extract_keywords(text):
     '''extract keywords by `TextRank`'''
     result = manual_m(text)
     text_rank_result = TextRank_m(text)
     return {"manual": result, "TextRank": text_rank_result}
+
 
 if __name__ == "__main__":
     nltk.download("stopwords", quiet=True)

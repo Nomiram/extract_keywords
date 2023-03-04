@@ -7,23 +7,26 @@ import yake
 
 from manual_m import manual_m
 
-def yake_m(text, num = 10):
+
+def yake_m(text, num=10):
     '''extract keywords by `YAKE!`'''
-    extractor = yake.KeywordExtractor (
-        lan = "ru",     # язык
-        n = 3,          # максимальное количество слов в фразе
-        dedupLim = 0.3, # порог похожести слов
-        top = num       # количество ключевых слов
+    extractor = yake.KeywordExtractor(
+        lan="ru",     # язык
+        n=3,          # максимальное количество слов в фразе
+        dedupLim=0.3,  # порог похожести слов
+        top=num       # количество ключевых слов
     )
     return ([i[0] for i in extractor.extract_keywords(text)])
 
-def extract_keywords(text, num = 10):
+
+def extract_keywords(text, num=10):
     '''extract keywords by manual method using file `keywords.json` and `YAKE!`'''
     # Manual method
     result = manual_m(text)
     # YAKE
     yake_result = yake_m(text, num)
     return {"manual": result, "yake": yake_result}
+
 
 if __name__ == "__main__":
     nltk.download("stopwords", quiet=True)
