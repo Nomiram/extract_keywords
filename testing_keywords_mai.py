@@ -3,7 +3,6 @@ import json
 from typing import List, Tuple
 
 import nltk
-import spacy
 import yake
 from nlp_rake import Rake
 from nltk.corpus import stopwords

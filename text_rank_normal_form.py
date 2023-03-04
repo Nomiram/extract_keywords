@@ -2,15 +2,11 @@
 import json
 import sys
 
-import nltk
 import pymorphy3
 import pytextrank
 import spacy
 
 from manual_m import manual_m
-
-# nltk.download("stopwords", quiet=True)
-# nltk.download('punkt', quiet=True)
 
 
 def TextRank_m(text):
