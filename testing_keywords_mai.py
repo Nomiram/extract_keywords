@@ -30,7 +30,9 @@ def stat(list1: List[str], list2: List[str]) -> Tuple[int, int]:
 
 
 # with open("theses_full.json","r",encoding="utf8") as f:
+# with open("text1.txt", "r", encoding="utf8") as f:
 with open("ГЧ21_keywords_theses.json", "r", encoding="utf8") as f:
+    # all_texts = [{"thesis": f.read(), "keywords": "ДТА"}]
     all_texts = json.load(f)[2]["data"]
 stats = {"ready_keywords": {"description": "Пользовательские ключевые слова"},
          "manual": {"description": "Прямой поиск"},
@@ -116,4 +118,7 @@ for key, method in stats.items():
     print("\t" + method["description"])
     print(f"Всего предложено:   {method['all']}")
     print(f"Совпадений:         {method['sum']}")
-    print(f"Процент совпадений: {method['sum']/method['all']*100}%")
+    if method['all'] > 0:
+        print(f"Процент совпадений: {method['sum']/method['all']*100}%")
+    else:
+        print(f"Процент совпадений: 0%")
