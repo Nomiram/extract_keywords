@@ -1,4 +1,5 @@
 '''Keywords statistics'''
+
 import json
 
 raw_data = []
@@ -14,13 +15,10 @@ for kw in raw_keywords:
             else:
                 keywords[i.lower()] = 1
 
-sum_one = 0
-all = len(keywords)
-for key, value in keywords.items():
-    if value == 1:
-        sum_one += 1
-print(f"Всего ключевых слов: {all}")
+all_kw = len(keywords)
+sum_one = sum(value == 1 for value in keywords.values())
+print(f"Всего ключевых слов: {all_kw}")
 print(f"Встречаются 1 раз:   {sum_one}")
-print(f"Частота:             {sum_one/all*100}%")
+print(f"Частота:             {sum_one/all_kw*100}%")
 # print(sorted(keywords, key=keywords.get, reverse=True))
 # print({i:keywords[i] for i in list(keywords)[0:7]})

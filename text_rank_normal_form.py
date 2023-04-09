@@ -9,7 +9,19 @@ import spacy
 from manual_m import manual_m
 
 
-def TextRank_m(text):
+def TextRank_m(text: str):
+    """
+    The function takes in a string of text, uses spaCy and PyTextRank to extract key phrases, 
+    and then uses pymorphy3 to normalize the phrases before returning them as a list.
+
+    Args:
+      text (str): The input text that needs to be analyzed and extracted for keywords using 
+    the TextRank algorithm.
+
+    Returns:
+      List of top-ranked phrases in the input text after applying the TextRank algorithm. 
+    The returned list contains the normalized form of the phrases.
+    """
 
     nlp = spacy.load("ru_core_news_sm")
 
@@ -46,6 +58,6 @@ def extract_keywords(text):
 if __name__ == "__main__":
     # nltk.download("stopwords", quiet=True)
     if not pytextrank.version:
-        exit()
+        sys.exit()
     input_text = sys.stdin.readlines()
     print(json.dumps(extract_keywords("\n".join(input_text))))

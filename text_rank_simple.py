@@ -12,7 +12,17 @@ nltk.download("stopwords", quiet=True)
 nltk.download('punkt', quiet=True)
 
 
-def TextRank_m(text):
+def TextRank_m(text: str):
+    """
+    The function takes in a string of text, uses spaCy and PyTextRank to extract key phrases.
+
+    Args:
+      text (str): The input text that needs to be analyzed and extracted for keywords using 
+    the TextRank algorithm.
+
+    Returns:
+      List of top-ranked phrases in the input text after applying the TextRank algorithm.
+    """
     nltk.download("stopwords", quiet=True)
     nltk.download('punkt', quiet=True)
 
