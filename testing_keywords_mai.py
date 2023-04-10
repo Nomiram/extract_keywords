@@ -15,7 +15,7 @@ from yake_keywords_mai import extract_keywords as YAKE
 
 
 # Количество текстов для теста
-COUNT_OF_TEXTS = 2
+COUNT_OF_TEXTS = 200
 
 
 class keywords_testing:
@@ -88,15 +88,15 @@ class keywords_testing:
         # keywords.keywords(text, language="russian", words=10).split())
 
         print("SUM:")
-        for key, method in self.stats.items():
+        for method in self.stats.values():
             print(method["description"], method["keywords"][-1])
             s, _, _ = self.stat(ready_keywords, method["keywords"][-1])
             method["sum"] += s
             method["all"] += len(method["keywords"][-1])
             print(method["description"], self.stat(
                 ready_keywords, method["keywords"][-1]))
-        self.stats["ready_keywords"]["all"] += len(ready_keywords)
-        self.stats["ready_keywords"]["sum"] += len(ready_keywords)
+        # self.stats["ready_keywords"]["all"] += len(ready_keywords)
+        # self.stats["ready_keywords"]["sum"] += len(ready_keywords)
 
 
 if __name__ == "__main__":

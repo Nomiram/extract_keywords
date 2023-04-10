@@ -29,8 +29,7 @@ def stem(text):
         # Удаление ошибок
         if text_strip[-1] == "":
             del text_strip[-1]
-    text_strip = " ".join(text_strip)
-    return text_strip
+    return " ".join(text_strip)
 
 
 def manual_m(text):
@@ -40,7 +39,7 @@ def manual_m(text):
     text_stem_list = text_stem.split()
     stem_keywords = {}
     with open(os.path.join(os.path.dirname(abspath(getsourcefile(lambda: 0))),
-                            "keywords.json"), "r", encoding="utf8") as f:
+                           "keywords.json"), "r", encoding="utf8") as f:
         keywords = json.load(f)
         for kw in keywords:
             stem_keywords[stem(kw)] = kw
@@ -48,7 +47,7 @@ def manual_m(text):
     for kw in list(stem_keywords):
         # Если ключевое слово есть в списке слов или списке словосочетаний
         if kw in text_stem_list or \
-                kw in [text_stem_list[i] + " " + text_stem_list[i + 1]\
+                kw in [text_stem_list[i] + " " + text_stem_list[i + 1]
                        for i in range(len(text_stem_list) - 1)]:
             result.append(stem_keywords[kw].lower())
     return result

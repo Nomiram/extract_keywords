@@ -1,12 +1,7 @@
 '''extract keywords from AiK thesis'''
-import json
-import sys
-
 import pymorphy3
 import pytextrank
 import spacy
-
-from manual_m import manual_m
 
 
 def extract_keywords(text: str):

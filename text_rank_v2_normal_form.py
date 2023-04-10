@@ -1,11 +1,9 @@
 '''extract keywords from AiK thesis'''
 import json
-import sys
 
 import pymorphy3
 import pytextrank
 import spacy
-from nltk.corpus import stopwords
 from summa import keywords
 
 from manual_m import manual_m

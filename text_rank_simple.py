@@ -1,12 +1,7 @@
 '''extract keywords from AiK thesis'''
-import json
-import sys
-
 import nltk
 import pytextrank
 import spacy
-
-from manual_m import manual_m
 
 nltk.download("stopwords", quiet=True)
 nltk.download('punkt', quiet=True)
