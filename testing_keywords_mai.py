@@ -5,86 +5,98 @@ from typing import List, Tuple
 import nltk
 import yake
 from nlp_rake import Rake
-from textblob import TextBlob
 from nltk.corpus import stopwords
-from summa import keywords
 
+from text_rank_normal_form import TextRank_m as TextRank_v1
+from text_rank_v2_normal_form import TextRank_m as TextRank_v2
 from yake_keywords_mai import extract_keywords
-from text_rank_normal_form import TextRank_m
+
+# from manual_m import stem
 
 
 # Количество текстов для теста
-COUNT_OF_TEXTS = 5
+COUNT_OF_TEXTS = 2
 
 
-def stat(list1: List[str], list2: List[str]) -> Tuple[int, int]:
-    '''providing comparison statistics of 2 lists'''
-    copy_list1 = [el.lower() for el in list1]
-    copy_list2 = [el.lower() for el in list2]
-    sum_ = sum(el in copy_list1 for el in copy_list2)
-    if neg := len(list2) - sum_:
-        return sum_, neg, sum_ / len(list2)
-    else:
-        return sum_, neg, 0
+class keywords_testing:
 
+    def init_stats(self):
+        """
+        The function initializes a dictionary of methods and their keyword lists,
+        sums, and counts.
+        """
+        self.stats = {"ready_keywords": {"description": "Пользовательские ключевые слова"},
+                      "manual": {"description": "Прямой поиск"},
+                      "rake_keywords": {"description": "RAKE"},
+                      "yake_keywords": {"description": "YAKE"},
+                      "text_rank_keywords": {"description": "TextRank"},
+                      "text_rank_keywords2": {"description": "TextRank2"},
+                      "text_rank+manual": {"description": "TextRank2 + Прямой"},
+                      }
+        for method in self.stats.values():
+            method["keywords"] = []
+            method["sum"] = 0
+            method["all"] = 0
 
-def apply_methods(text, stats, ready_keywords):
-    stats["manual"]["keywords"].append(extract_keywords(text)["manual"])
-    # print("\n\nRAKE")
-    stops = list(set(stopwords.words("russian")))
+    def stat(self, list1: List[str], list2: List[str]) -> Tuple[int, int]:
+        '''providing comparison statistics of 2 lists'''
+        copy_list1 = [el.lower() for el in list1]
+        copy_list2 = [el.lower() for el in list2]
+        sum_ = sum(el in copy_list1 for el in copy_list2)
+        if neg := len(list2) - sum_:
+            return sum_, neg, sum_ / len(list2)
+        else:
+            return sum_, neg, 0
 
-    rake = Rake(stopwords=stops, max_words=3)
-    rake_keywords = [i[0] for i in rake.apply(text)[:10]]
-    # print("\n\nYAKE!")
-    extractor = yake.KeywordExtractor(
-        lan="ru",     # язык
-        n=3,          # максимальное количество слов в фразе
-        dedupLim=0.3,  # порог похожести слов
-        top=10        # количество ключевых слов
-    )
-    yake_keywords = [i[0] for i in extractor.extract_keywords(text)]
+    def __init__(self):
+        self.init_stats()
 
-    # print("\n\nTextRank")
-    text_clean = ""
-    # уберем стоп-слова
-    for word in text.split():
-        if word not in stops:
-            text_clean += word + " "
-    text_rank_keywords = keywords.keywords(
-        text_clean, language="russian").split("\n")
-    blob = TextBlob(text_clean)
-    noun = blob.noun_phrases
+    def apply_methods(self, text, ready_keywords):
+        """apply extracting methods
 
-    # print("\n\nTextRank v2")
+        Args:
+            text (str): text to analyze
+            ready_keywords (List): User provided keywords
+        """
+        self.stats["ready_keywords"]["keywords"].append(ready_keywords)
+        self.stats["manual"]["keywords"].append(
+            extract_keywords(text)["manual"])
+        # print("\n\nRAKE")
+        stops = list(set(stopwords.words("russian")))
 
-    text_rank_keywords2 = TextRank_m(text)
+        rake = Rake(stopwords=stops, max_words=3)
+        self.stats["rake_keywords"]["keywords"].append(
+            [i[0] for i in rake.apply(text)[:10]])
+        # print("\n\nYAKE!")
+        extractor = yake.KeywordExtractor(
+            lan="ru",      # язык
+            n=3,           # максимальное количество слов в фразе
+            dedupLim=0.3,  # порог похожести слов
+            top=10         # количество ключевых слов
+        )
+        self.stats["yake_keywords"]["keywords"].append(
+            [i[0] for i in extractor.extract_keywords(text)])
 
-    print("SUM:")
-    print("Ready   ", ready_keywords)
-    print("manual  ", stats["manual"]["keywords"][-1])
-    print("RAKE    ", rake_keywords)
-    print("YAKE    ", yake_keywords)
-    print("TextRank", text_rank_keywords2)
-    stats["ready_keywords"]["all"] += len(ready_keywords)
-    stats["ready_keywords"]["sum"] += len(ready_keywords)
-    s, _, _ = stat(ready_keywords, stats["manual"]["keywords"][-1])
-    stats["manual"]["sum"] += s
-    stats["manual"]["all"] += len(stats["manual"]["keywords"][-1])
-    print("manual", stat(ready_keywords, stats["manual"]["keywords"][-1]))
+        # TextRank v1
+        self.stats["text_rank_keywords"]["keywords"].append(TextRank_v1(text))
+        # TextRank v2
+        self.stats["text_rank_keywords2"]["keywords"].append(TextRank_v2(text))
+        # TextRank v2 + Manual
+        self.stats["text_rank+manual"]["keywords"].append(list(set(
+            self.stats["text_rank_keywords2"]["keywords"][-1]+self.stats["manual"]["keywords"][-1])))
+        # self.stats["text_rank_keywords2"]["keywords"].append(
+        # keywords.keywords(text, language="russian", words=10).split())
 
-    s, _, _ = stat(ready_keywords, rake_keywords)
-    stats["rake"]["sum"] += s
-    stats["rake"]["all"] += len(rake_keywords)
-    print("RAKE", stat(ready_keywords, rake_keywords))
-    s, _, _ = stat(ready_keywords, rake_keywords)
-    stats["yake"]["sum"] += s
-    stats["yake"]["all"] += len(yake_keywords)
-    print("YAKE!", stat(ready_keywords, yake_keywords))
-    s, _, _ = stat(ready_keywords, text_rank_keywords2)
-    stats["text_rank_keywords2"]["sum"] += s
-    stats["text_rank_keywords2"]["all"] += len(text_rank_keywords2)
-    # print("text_rank_keywords", stat(ready_keywords, text_rank_keywords))
-    print("text_rank_keywords2", stat(ready_keywords, text_rank_keywords2))
+        print("SUM:")
+        for key, method in self.stats.items():
+            print(method["description"], method["keywords"][-1])
+            s, _, _ = self.stat(ready_keywords, method["keywords"][-1])
+            method["sum"] += s
+            method["all"] += len(method["keywords"][-1])
+            print(method["description"], self.stat(
+                ready_keywords, method["keywords"][-1]))
+        self.stats["ready_keywords"]["all"] += len(ready_keywords)
+        self.stats["ready_keywords"]["sum"] += len(ready_keywords)
 
 
 if __name__ == "__main__":
@@ -95,17 +107,7 @@ if __name__ == "__main__":
     with open("ГЧ21_keywords_theses.json", "r", encoding="utf8") as f:
         # all_texts = [{"thesis": f.read(), "keywords": "ДТА"}]
         all_texts = json.load(f)[2]["data"]
-    stats = {"ready_keywords": {"description": "Пользовательские ключевые слова"},
-             "manual": {"description": "Прямой поиск"},
-             "rake": {"description": "RAKE"},
-             "yake": {"description": "YAKE"},
-             "text_rank_keywords2": {"description": "TextRank"},
-             }
-    for method in stats.values():
-        method["keywords"] = []
-        method["sum"] = 0
-        method["all"] = 0
-
+    testing_class = keywords_testing()
     for current_text_num, raw_data in enumerate(all_texts):
         if current_text_num >= COUNT_OF_TEXTS:
             break
@@ -114,10 +116,10 @@ if __name__ == "__main__":
             continue
         ready_keywords = raw_data["keywords"].split(", ")
         text = raw_data["thesis"]
-        apply_methods(text, stats, ready_keywords)
+        testing_class.apply_methods(text, ready_keywords)
     print()
     print("Всего текстов:", COUNT_OF_TEXTS)
-    for method in stats.values():
+    for method in testing_class.stats.values():
         print("\t" + method["description"])
         print(f"Всего предложено:   {method['all']}")
         print(f"Совпадений:         {method['sum']}")
