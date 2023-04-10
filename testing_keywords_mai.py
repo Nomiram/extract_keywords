@@ -7,9 +7,9 @@ import yake
 from nlp_rake import Rake
 from nltk.corpus import stopwords
 
-from text_rank_normal_form import TextRank_m as TextRank_v1
-from text_rank_v2_normal_form import TextRank_m as TextRank_v2
-from yake_keywords_mai import extract_keywords
+from text_rank_normal_form import extract_keywords as TextRank_v1
+from text_rank_v2_normal_form import extract_keywords as TextRank_v2
+from yake_keywords_mai import extract_keywords as YAKE
 
 # from manual_m import stem
 
@@ -60,7 +60,7 @@ class keywords_testing:
         """
         self.stats["ready_keywords"]["keywords"].append(ready_keywords)
         self.stats["manual"]["keywords"].append(
-            extract_keywords(text)["manual"])
+            YAKE(text)["manual"])
         # print("\n\nRAKE")
         stops = list(set(stopwords.words("russian")))
 

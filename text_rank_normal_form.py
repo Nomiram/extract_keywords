@@ -9,7 +9,7 @@ import spacy
 from manual_m import manual_m
 
 
-def TextRank_m(text: str):
+def extract_keywords(text: str):
     """
     The function takes in a string of text, uses spaCy and PyTextRank to extract key phrases, 
     and then uses pymorphy3 to normalize the phrases before returning them as a list.
@@ -46,18 +46,3 @@ def TextRank_m(text: str):
         text_rank_keywords2.append(
             pymorphy3.shapes.restore_capitalization(" ".join(ready_words), phrase))
     return list(set(text_rank_keywords2))
-
-
-def extract_keywords(text):
-    '''extract keywords by `TextRank`'''
-    result = manual_m(text)
-    text_rank_result = TextRank_m(text)
-    return {"manual": result, "TextRank": text_rank_result}
-
-
-if __name__ == "__main__":
-    # nltk.download("stopwords", quiet=True)
-    if not pytextrank.version:
-        sys.exit()
-    input_text = sys.stdin.readlines()
-    print(json.dumps(extract_keywords("\n".join(input_text))))
